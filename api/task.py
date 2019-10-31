@@ -32,7 +32,7 @@ class Task:
     def on_validation(self, arg_values):
         """
         Called when user entered valid arguments. You can use this method to perform additional checks on values
-        (i.e if an integer argument correspond to a website url, ping this website to see if it exists).
+        (i.e if an argument correspond to a website url, ping this website to see if it exists).
 
         :param arg_values: a dict mapping arguments name to their value
         :return: a tuple containing two values. The first one indicates if the values for arguments are still valid,
