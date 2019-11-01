@@ -11,8 +11,9 @@ class Routine:
         """
         Creates a new routine with the given name. The name must be unique between all existing routines.
 
-        :param name: the name for the routine
+        :param name: the name for the routine, must not be empty
         """
+        assert len(name) > 0, "The routine name must not be empty"
         self.name = name
         self.tasks = []
 
