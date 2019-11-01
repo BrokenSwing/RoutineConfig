@@ -29,7 +29,7 @@ class Task:
 
         self.arguments[name] = arg_type
 
-    def on_validation(self, arg_values):
+    def on_validation(self, arg_values: dict):
         """
         Called when user entered valid arguments. You can use this method to perform additional checks on values
         (i.e if an argument correspond to a website url, ping this website to see if it exists).
@@ -40,7 +40,7 @@ class Task:
         """
         return True, None
 
-    def execute_task(self, arg_values):
+    def execute_task(self, arg_values: dict):
         """
         Executes the action corresponding to the task.
 
