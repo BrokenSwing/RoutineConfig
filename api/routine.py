@@ -50,7 +50,7 @@ class Routine:
         :param arguments: the new values for the arguments
         :raises IndexError: if the given index is greater than or equal to the task count
         """
-        task = self.tasks[index]
+        task, old_values = self.tasks[index]
         self.tasks[index] = (task, arguments)
 
     def execute_routine(self):
