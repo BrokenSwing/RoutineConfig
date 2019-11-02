@@ -1,4 +1,5 @@
 language: python
+os: linux
 python:
   - "3.6"
 install:
@@ -6,6 +7,6 @@ install:
   - pip install nose
   - pip install codecov
 script:
-  - python -m node --with-coverage
+  - python -m nose --with-coverage
 after_success:
   - python -m codecov
