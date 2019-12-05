@@ -1,0 +1,30 @@
+{% macro icon(name) %}
+    <span class="icon">
+        <i class="fas fa-{{ name }}"></i>
+    </span>
+{% endmacro %}
+
+{% macro field(field_name, field_label, field_type="text") %}
+    <div class="field">
+        <label class="label" for="{{ field_name }}">{{ field_label }}</label>
+        <div class="control">
+            <input class="input" type="{{ field_type }}" name="{{ field_name }}" placeholder="{{ field_label }}">
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro hidden(name, value) %}
+    <input name="{{ name }}" type="hidden" value="{{ value }}">
+{% endmacro %}
+
+{% macro error(message) %}
+    <div class="notification is-danger">
+        {{ message }}
+    </div>
+{% endmacro %}
+
+{% macro success(message) %}
+    <div class="notification is-success">
+        {{ message }}
+    </div>
+{% endmacro %}

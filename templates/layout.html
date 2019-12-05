@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bulma.min.css') }}">
+        <title>{% block title %}{% endblock %} - Routine Config</title>
+        <script defer src="{{ url_for('static', filename='icons.js') }}"></script>
+        <script defer src="{{ url_for('static', filename='nav.js') }}"></script>
+    {% endblock %}
+</head>
+<body>
+{% block navigation %}
+    <nav class="navbar is-dark" role="navigation" id="nav" aria-label="main navigation">
+        <div class="navbar-brand">
+            <!-- BRAND -->
+            <a class="navbar-item" href="/">
+                RPi Planner
+            </a>
+            <!-- BURGER -->
+            <a class="navbar-burger burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <!-- Link to card triggers configuration -->
+                <a class="navbar-item">
+                    <span class="icon">
+                        <i class="fas fa-tasks"></i>
+                    </span>
+                    Cartes
+                </a>
+                <!-- Link to routines definitions -->
+                <a class="navbar-item">
+                    <span class="icon">
+                        <i class="fas fa-cog"></i>
+                    </span>
+                    Routines
+                </a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+
+<div class="section">
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>
+            Design par Florent HUGOUVIEUX
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

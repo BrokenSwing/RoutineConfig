@@ -1,0 +1,105 @@
+{% import "helper.html" as helper %}
+
+{% macro arg_template(name, arg, value) %}
+    <div class="field">
+        {% if arg.type == "choice" %}
+            <label class="label">{{ name }}</label>
+            <div class="control">
+                <div class="select">
+                    <select>
+                        {% for opt in arg.choices %}
+                            <option>{{ opt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        {% endif %}
+
+
+        {% if arg.type == "integer" %}
+            <label class="label">{{ name }}</label>
+            <div class="control">
+                <input class="input" type="number" min="{{ arg.min }}" max="{{ arg.max }}">
+            </div>
+            {% if arg.min != None %}
+                <p class="help">Min: {{ arg.min }}</p>
+            {% endif %}
+            {% if arg.max != None %}
+                <p class="help">Max: {{ arg.max }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro task_template(task, values) %}
+    <article class="message">
+        <div class="message-header">
+            <p>{{ task.name }}</p>
+        </div>
+        <div class="message-body">
+            {% for arg_name in task.arguments %}
+                {{ arg_template(arg_name, task.arguments[arg_name], values[arg_name]) }}<br />
+            {% endfor %}
+        </div>
+    </article>
+{% endmacro %}
+
+{% macro routine(routine) %}
+<div>
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <div class="field has-addons">
+                    <p class="control">
+                        <input class="input" type="text" value="{{ routine.name }}" disabled/>
+                    </p>
+                    <p class="control">
+                        <button class="button">
+                            {{ helper.icon("edit") }}
+                        </button>
+                    </p>
+                </div>
+            </div>
+            <div class="level-item">
+                {{ routine.tasks|length }} tâches associées
+                {{ helper.icon("caret-down") }}
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <div class="columns is-mobile">
+                    <div class="column">
+                        <div class="field">
+                            <div class="control">
+                                <form action="/routines" method="post">
+                                    {{ helper.hidden("action", "run") }}
+                                    {{ helper.hidden("value", routine.name) }}
+                                    <button class="button is-success" type="submit">
+                                        {{ helper.icon("play") }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <div class="control">
+                                <form action="/routines" method="post">
+                                    {{ helper.hidden("action", "delete") }}
+                                    {{ helper.hidden("value", routine.name) }}
+                                    <button class="button is-danger" type="submit">
+                                        {{ helper.icon("trash") }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for task, values in routine.tasks %}
+        {{ task_template(task, values) }}
+    {% endfor %}
+</div>
+{% endmacro %}

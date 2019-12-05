@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% import 'routine.html' as routine_template %}
+{% import "helper.html" as helper %}
+
+{% block title %}Routines{% endblock %}
+
+{% block content %}
+
+    {% if error %}
+        {{ helper.error(error) }}
+    {% endif %}
+
+    {% if success %}
+        {{ helper.success(success) }}
+    {% endif %}
+
+    <h1 class="title">Routines :</h1>
+    <button class="button is-primary" id="create-routine-button">Créer une routine</button>
+    <hr/>
+    <br />
+
+    {% for routine in routines %}
+        {{ routine_template.routine(routine) }} <br />
+    {% endfor %}
+
+    <div class="modal" id="creation-modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <form action="/routines" method="post">
+                <input type="hidden" name="action" value="create" />
+
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">Créer une routine</p>
+                    </header>
+                    <div class="card-content">
+                        {{ helper.field("value", "Nom de la routine") }}
+                    </div>
+                    <footer class="card-footer">
+                        <a href="#" class="card-footer-item" id="modal-cancel">Annuler</a>
+                        <a href="#" class="card-footer-item" id="modal-create" disabled>Créer</a>
+                    </footer>
+                </div>
+            </form>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+
+    <script src="{{ url_for('static', filename='routines.js') }}"></script>
+
+{% endblock %}
