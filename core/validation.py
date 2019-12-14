@@ -6,7 +6,12 @@ def validate(arg_type: dict, value: any) -> bool:
     :param value: the value to validate for this argument
     :return: True if the value if valid for the given argument type, else False
     """
-    if arg_type["type"] == "integer" and type(value) == int:
+    if arg_type["type"] == "integer" and (type(value) == int or type(value) == str):
+        if type(value) == str:
+            try:
+                value = int(value)
+            except ValueError:
+                return False
         return validate_integer_arg(arg_type, int(value))
     if arg_type["type"] == "choice" and type(value) == str:
         return validate_choice_arg(arg_type, value)

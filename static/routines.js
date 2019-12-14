@@ -1,3 +1,5 @@
+// Routine creation
+
 let createRoutineButton = document.getElementById("create-routine-button");
 let modal = document.getElementById("creation-modal");
 
@@ -26,4 +28,13 @@ cancelCreationButton.addEventListener("click", (e) => {
 confirmCreationButton.addEventListener("click", (e) => {
     e.preventDefault();
     form.submit();
+});
+
+// Tasks collapsing
+
+document.querySelectorAll(".collapse-button").forEach((button) => {
+    let result = document.querySelector(`.tasks[data-targeted="${button.dataset.target}"]`);
+    button.addEventListener("click", () => {
+        result.classList.toggle("tasks-hidden")
+    });
 });

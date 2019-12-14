@@ -3,6 +3,7 @@ from api.manager import Manager
 from api.task import Task
 import api.arg_type as arg_type
 from api.routine import Routine
+from core import validation
 
 app = Flask(__name__)
 manager = Manager()
@@ -11,6 +12,9 @@ task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
 task.execute_task = lambda x: print("Task ran")
 manager.register_task(task)
+routine = Routine("Ma routine")
+routine.add_task(task, {})
+manager.add_routine(routine)
 
 
 @app.route('/')
@@ -59,6 +63,33 @@ def routines():
                 success = "La routine a bien été créée."
             else:
                 error = "Une routine avec ce nom existe déjà."
+        elif action == "update":
+            r = manager.find_routine(value)
+            if r is not None:
+                try:
+                    print(request.form)
+                    task_name = request.form["task"]
+                    for i, (t, _) in enumerate(r.tasks):
+                        if t.name == task_name:
+                            values = {}
+                            for arg_name in t.arguments:
+                                arg = t.arguments[arg_name]
+                                arg_value = request.form["{}Field".format(arg_name)]
+                                if not validation.validate(arg, arg_value):
+                                    err = "La valeur {} n'est pas valide pour l'argument {}.".format(arg_value, arg_name)
+                                    error = err if error is None else "{} {}".format(error, err)
+                                else:
+                                    values[arg_name] = arg_value
+                            if error is None:
+                                ok, error = t.on_validation(values)
+                                if ok:
+                                    r.modify_task(i, values)
+                                    success = "La routine a bien été mise à jour."
+                            break
+                except KeyError:
+                    error = "Une erreur est survenue"
+            else:
+                error = "Impossible de trouver une routine avec ce nom"
 
     return render_template("routines.html", routines=manager.routines.values(), error=error, success=success)
 

@@ -1,0 +1,10 @@
+.tasks {
+    height: 100%;
+    overflow: hidden;
+    transition: height 0.5s, opacity 0.5s;
+}
+
+.tasks-hidden {
+    height: 0;
+    opacity: 0;
+}
