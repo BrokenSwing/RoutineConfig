@@ -10,11 +10,7 @@ manager = Manager()
 task = Task("My task")
 task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
-task.execute_task = lambda x: print("Task ran")
 manager.register_task(task)
-routine = Routine("Ma routine")
-routine.add_task(task, {})
-manager.add_routine(routine)
 
 
 @app.route('/')
