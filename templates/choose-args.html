@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% import "routine.html" as routine_template %}
+{% import "helper.html" as helper %}
+
+{% block content %}
+
+    {% if error %}
+        {{ helper.error(error) }}
+    {% endif %}
+
+    <h1 class="title">Complétez le formulaire</h1>
+
+    <form method="post">
+        <article class="message">
+            <div class="message-header">
+                <p>{{ task.name }}</p>
+            </div>
+            <div class="message-body">
+                {% for arg_name in task.arguments %}
+                    {{ routine_template.arg_template(arg_name, task.arguments[arg_name], "") }}<br/>
+                {% endfor %}
+                <input class="button is-primary" value="Ajouter" type="submit">
+            </div>
+        </article>
+    </form>
+
+{% endblock %}

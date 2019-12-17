@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort, redirect
 from api.manager import Manager
 from api.task import Task
 import api.arg_type as arg_type
@@ -18,7 +18,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/routines", methods=["GET", "POST"])
+@app.route("/routines/", methods=["GET", "POST"])
 def routines():
     error = None
     success = None
@@ -63,7 +63,6 @@ def routines():
             r = manager.find_routine(value)
             if r is not None:
                 try:
-                    print(request.form)
                     task_name = request.form["task"]
                     for i, (t, _) in enumerate(r.tasks):
                         if t.name == task_name:
@@ -88,6 +87,41 @@ def routines():
                 error = "Impossible de trouver une routine avec ce nom"
 
     return render_template("routines.html", routines=manager.routines.values(), error=error, success=success)
+
+
+@app.route("/routines/add-task/<name>/")
+def routine_add_task(name: str):
+    r = manager.find_routine(name)
+    if r is None:
+        abort(404)
+    return render_template("add-task.html", tasks=manager.tasks.values(), routine=r)
+
+
+@app.route("/routines/add-task/<routine_name>/<task_name>/", methods=["GET", "POST"])
+def routine_add_task_values(routine_name: str, task_name: str):
+    r = manager.find_routine(routine_name)
+    t = manager.find_task(task_name)
+    if r is None or t is None:
+        abort(404)
+
+    error = None
+    if request.method == "POST":
+        values = {}
+        for arg_name in t.arguments:
+            try:
+                value = request.form["%sField" % arg_name]
+                if validation.validate(t.arguments[arg_name], value):
+                    values[arg_name] = value
+                else:
+                    err = "La valeur {} n'est pas valide pour l'argument {}".format(value, arg_name)
+                    error = err if error is None else "{} {}".format(error, err)
+            except KeyError:
+                error = "Valeur(s) manquante(s) !"
+        if error is None:
+            r.add_task(t, values)
+            return redirect("/routines")
+
+    return render_template("choose-args.html", routine=r, task=t, error=error)
 
 
 if __name__ == '__main__':

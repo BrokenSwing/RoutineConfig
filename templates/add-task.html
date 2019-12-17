@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1 class="title">Choisir une tâche à ajouter</h1>
+
+
+{% for task in tasks %}
+    <form method="get" action="/routines/add-task/{{ routine.name }}/{{ task.name }}">
+        <article class="message">
+            <div class="message-header">
+                <p>{{ task.name }}</p>
+                <input class="button is-primary" value="Choisir" type="submit">
+            </div>
+        </article>
+    </form>
+{% endfor %}
+
+{% endblock %}
