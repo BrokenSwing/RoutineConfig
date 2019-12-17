@@ -23,6 +23,10 @@
         {{ routine_template.routine(routine) }} <br />
     {% endfor %}
 
+    {% if not routines|length %}
+        <h3 class="subtitle">Pas de routine</h3>
+    {% endif %}
+
     <div class="modal" id="creation-modal">
         <div class="modal-background"></div>
         <div class="modal-content">
