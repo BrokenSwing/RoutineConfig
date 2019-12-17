@@ -86,6 +86,22 @@ def routines():
                     error = "Une erreur est survenue"
             else:
                 error = "Impossible de trouver une routine avec ce nom"
+        elif action == "delete-task":
+            r = manager.find_routine(value)
+            if r is not None:
+                try:
+                    task_index = request.form["task"]
+                    task_index = int(task_index)
+                    r.remove_task(task_index)
+                    success = "La tâche a bien été supprimée"
+                except KeyError:
+                    error = "Une erreur est survenue côté serveur"
+                except ValueError:
+                    error = "Une erreur est survenue côté serveur"
+                except IndexError:
+                    error = "Cette tâche n'existe pas"
+            else:
+                error = "Il n'existe pas de routine avec ce nom"
 
     return render_template("routines.html", routines=manager.routines.values(), error=error, success=success)
 

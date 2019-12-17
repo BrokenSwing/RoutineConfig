@@ -1,5 +1,31 @@
 {% import "helper.html" as helper %}
 
+{% macro task_template(i, routine, task, values) %}
+    <article class="message">
+        <div class="message-header">
+            <p>{{ task.name }}</p>
+        </div>
+        <div class="message-body">
+            <form method="post">
+                {{ helper.hidden("action", "update") }}
+                {{ helper.hidden("value", routine.name) }}
+                {{ helper.hidden("task", i) }}
+                {% for arg_name in task.arguments %}
+                    {{ arg_template(arg_name, task.arguments[arg_name], values[arg_name]) }}<br />
+                {% endfor %}
+                <input class="button is-primary" value="Sauvegarder" type="submit">
+            </form>
+            <br />
+            <form method="post">
+                {{ helper.hidden("action", "delete-task") }}
+                {{ helper.hidden("value", routine.name) }}
+                {{ helper.hidden("task", i) }}
+                <input class="button is-danger" value="Supprimer" type="submit">
+            </form>
+        </div>
+    </article>
+{% endmacro %}
+
 {% macro arg_template(name, arg, value) %}
     <div class="field">
         {% if arg.type == "choice" %}
@@ -35,25 +61,6 @@
     </div>
 {% endmacro %}
 
-{% macro task_template(i, routine, task, values) %}
-    <form method="post">
-        {{ helper.hidden("action", "update") }}
-        {{ helper.hidden("value", routine.name) }}
-        {{ helper.hidden("task", i) }}
-        <article class="message">
-            <div class="message-header">
-                <p>{{ task.name }}</p>
-            </div>
-            <div class="message-body">
-                {% for arg_name in task.arguments %}
-                    {{ arg_template(arg_name, task.arguments[arg_name], values[arg_name]) }}<br />
-                {% endfor %}
-                <input class="button is-primary" value="Sauvegarder" type="submit">
-            </div>
-        </article>
-    </form>
-{% endmacro %}
-
 {% macro routine(routine) %}
 <div>
     <div class="level">
@@ -86,7 +93,7 @@
                     <div class="column">
                         <div class="field">
                             <div class="control">
-                                <form action="/routines" method="post">
+                                <form method="post">
                                     {{ helper.hidden("action", "run") }}
                                     {{ helper.hidden("value", routine.name) }}
                                     <button class="button is-success" type="submit">
@@ -99,7 +106,7 @@
                     <div class="column">
                         <div class="field">
                             <div class="control">
-                                <form action="/routines" method="post">
+                                <form method="post">
                                     {{ helper.hidden("action", "delete") }}
                                     {{ helper.hidden("value", routine.name) }}
                                     <button class="button is-danger" type="submit">
