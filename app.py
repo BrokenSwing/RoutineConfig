@@ -63,25 +63,26 @@ def routines():
             r = manager.find_routine(value)
             if r is not None:
                 try:
-                    task_name = request.form["task"]
-                    for i, (t, _) in enumerate(r.tasks):
-                        if t.name == task_name:
-                            values = {}
-                            for arg_name in t.arguments:
-                                arg = t.arguments[arg_name]
-                                arg_value = request.form["{}Field".format(arg_name)]
-                                if not validation.validate(arg, arg_value):
-                                    err = "La valeur {} n'est pas valide pour l'argument {}.".format(arg_value, arg_name)
-                                    error = err if error is None else "{} {}".format(error, err)
-                                else:
-                                    values[arg_name] = arg_value
-                            if error is None:
-                                ok, error = t.on_validation(values)
-                                if ok:
-                                    r.modify_task(i, values)
-                                    success = "La routine a bien été mise à jour."
-                            break
+                    task_index = request.form["task"]
+                    task_index = int(task_index)
+                    (t, _) = r.tasks[task_index]
+                    values = {}
+                    for arg_name in t.arguments:
+                        arg = t.arguments[arg_name]
+                        arg_value = request.form["{}Field".format(arg_name)]
+                        if not validation.validate(arg, arg_value):
+                            err = "La valeur {} n'est pas valide pour l'argument {}.".format(arg_value, arg_name)
+                            error = err if error is None else "{} {}".format(error, err)
+                        else:
+                            values[arg_name] = arg_value
+                    if error is None:
+                        ok, error = t.on_validation(values)
+                        if ok:
+                            r.modify_task(task_index, values)
+                            success = "La routine a bien été mise à jour."
                 except KeyError:
+                    error = "Une erreur est survenue"
+                except ValueError:
                     error = "Une erreur est survenue"
             else:
                 error = "Impossible de trouver une routine avec ce nom"

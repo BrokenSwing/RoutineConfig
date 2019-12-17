@@ -8,7 +8,10 @@
                 <div class="select">
                     <select name="{{ name }}Field">
                         {% for opt in arg.choices %}
-                            <option selected="{{ opt == value }}">{{ opt }}</option>
+                            <option
+                                value="{{ opt }}"
+                                {% if opt == value %}selected{% endif %}
+                            >{{ opt }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -32,11 +35,11 @@
     </div>
 {% endmacro %}
 
-{% macro task_template(routine, task, values) %}
+{% macro task_template(i, routine, task, values) %}
     <form method="post">
         {{ helper.hidden("action", "update") }}
         {{ helper.hidden("value", routine.name) }}
-        {{ helper.hidden("task", task.name) }}
+        {{ helper.hidden("task", i) }}
         <article class="message">
             <div class="message-header">
                 <p>{{ task.name }}</p>
@@ -112,7 +115,7 @@
     </div>
     <div class="tasks tasks-hidden" data-targeted="{{ routine.name }}">
         {% for task, values in routine.tasks %}
-            {{ task_template(routine, task, values) }}
+            {{ task_template(loop.index0, routine, task, values) }}<br/>
         {% endfor %}
     </div>
 </div>
