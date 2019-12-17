@@ -15,6 +15,8 @@ def validate(arg_type: dict, value: any) -> bool:
         return validate_integer_arg(arg_type, int(value))
     if arg_type["type"] == "choice" and type(value) == str:
         return validate_choice_arg(arg_type, value)
+    if arg_type["type"] == "string" and type(value) == str:
+        return validate_string_arg(arg_type, value)
     return False
 
 
@@ -45,3 +47,14 @@ def validate_choice_arg(arg: dict, value: str) -> bool:
     :return: True if the value passes checks, else False
     """
     return value in arg["choices"]
+
+
+def validate_string_arg(arg: dict, value: str) -> bool:
+    """
+    Checks if the given value matched constraints of string argument (from api.arg_type).
+
+    :param arg: the string argument
+    :param value: the value to validate
+    :return: True if the value passes checks, else False
+    """
+    return True

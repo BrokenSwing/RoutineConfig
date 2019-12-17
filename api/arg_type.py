@@ -33,3 +33,14 @@ def integer(minimum=None, maximum=None):
     if maximum is not None:
         desc["max"] = int(maximum)
     return desc
+
+
+def string():
+    """
+    Creates a string argument type.
+
+    :return: a dict representing this argument type with the appropriate format to be sued by the JS front-end script
+    """
+    return {
+        "type": "string",
+    }

@@ -58,6 +58,13 @@
                 <p class="help">Max: {{ arg.max }}</p>
             {% endif %}
         {% endif %}
+
+        {% if arg.type == "string" %}
+            <label class="label">{{ name }}</label>
+            <div class="control">
+                <input class="input" name="{{ name }}Field" type="text" value="{{ value }}">
+            </div>
+        {% endif %}
     </div>
 {% endmacro %}
 

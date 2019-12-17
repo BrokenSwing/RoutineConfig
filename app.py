@@ -10,6 +10,7 @@ manager = Manager()
 task = Task("My task")
 task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
+task.register_argument("Phrase", arg_type.string())
 manager.register_task(task)
 
 
