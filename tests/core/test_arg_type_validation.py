@@ -181,6 +181,12 @@ class TestGlobalValidation(unittest.TestCase):
         self.assertFalse(self.calls["choice"])
         self.assertFalse(self.calls["string"])
 
+    def test_global_validation_int_passed_no_int_no_string(self):
+        core.validation.validate({"type": "integer"}, True)
+        self.assertFalse(self.calls["integer"])
+        self.assertFalse(self.calls["choice"])
+        self.assertFalse(self.calls["string"])
+
     def test_global_validation_int_passed_as_string(self):
         core.validation.validate({"type": "integer"}, "10")
         self.assertTrue(self.calls["integer"])
