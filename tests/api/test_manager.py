@@ -48,7 +48,3 @@ class TestManager(unittest.TestCase):
         self.manager.add_routine(self.routine)
         self.manager.remove_routine("the routine")
         self.assertEqual(len(self.manager.routines), 0)
-
-
-if __name__ == '__main__':
-    unittest.main()

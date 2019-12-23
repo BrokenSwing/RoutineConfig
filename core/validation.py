@@ -1,3 +1,6 @@
+import re
+
+
 def validate(arg_type: dict, value: any) -> bool:
     """
     Validates any known argument type.
@@ -52,9 +55,18 @@ def validate_choice_arg(arg: dict, value: str) -> bool:
 def validate_string_arg(arg: dict, value: str) -> bool:
     """
     Checks if the given value matched constraints of string argument (from api.arg_type).
+    If arg has a regex defined, it checks value matches this regex.
+    If arg has a min_length, it checks value is longer than or equal to min_length
+    If arg has a max_length, it checks value is shorter than or equal to max_length
 
     :param arg: the string argument
     :param value: the value to validate
     :return: True if the value passes checks, else False
     """
+    if "regex" in arg and re.search(arg["regex"], value) is None:
+        return False
+    if "min_length" in arg and len(value) < arg["min_length"]:
+        return False
+    if "max_length" in arg and len(value) > arg["max_length"]:
+        return False
     return True

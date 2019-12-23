@@ -10,7 +10,7 @@ manager = Manager()
 task = Task("My task")
 task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
-task.register_argument("Phrase", arg_type.string())
+task.register_argument("Phrase", arg_type.string(regex="^c", min_length=1, max_length=10))
 manager.register_task(task)
 
 
@@ -131,7 +131,7 @@ def routine_add_task_values(routine_name: str, task_name: str):
                 if validation.validate(t.arguments[arg_name], value):
                     values[arg_name] = value
                 else:
-                    err = "La valeur {} n'est pas valide pour l'argument {}".format(value, arg_name)
+                    err = "La valeur {} n'est pas valide pour l'argument {}.".format(value, arg_name)
                     error = err if error is None else "{} {}".format(error, err)
             except KeyError:
                 error = "Valeur(s) manquante(s) !"

@@ -62,8 +62,18 @@
         {% if arg.type == "string" %}
             <label class="label">{{ name }}</label>
             <div class="control">
-                <input class="input" name="{{ name }}Field" type="text" value="{{ value }}">
+                <input class="input" name="{{ name }}Field" type="text" value="{{ value }}"
+                       minlength="{{ arg.min_length }}" maxlength="{{ arg.max_length }}">
             </div>
+            {% if arg.min_length != None %}
+                <p class="help">Longueur minimum: {{ arg.min_length }}</p>
+            {% endif %}
+            {% if arg.max_length != None %}
+                <p class="help">Longueur maximum: {{ arg.max_length }}</p>
+            {% endif %}
+            {% if arg.regex != None %}
+                <p class="help">Doit respecter la format: {{ arg.regex }}</p>
+            {% endif %}
         {% endif %}
     </div>
 {% endmacro %}

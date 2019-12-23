@@ -53,7 +53,3 @@ class TestTask(unittest.TestCase):
         task.register_argument("name", arg_type_2)
         self.assertEqual(len(task.arguments), 1)
         self.assertDictEqual(task.arguments["name"], arg_type_2)
-
-
-if __name__ == "__main__":
-    unittest.main()

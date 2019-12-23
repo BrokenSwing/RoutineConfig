@@ -65,7 +65,3 @@ class TestRoutine(unittest.TestCase):
             "two": 2
         })
         routine.execute_routine()
-
-
-if __name__ == '__main__':
-    unittest.main()

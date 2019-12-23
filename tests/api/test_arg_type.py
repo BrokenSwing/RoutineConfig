@@ -47,6 +47,41 @@ class TestArgTypes(unittest.TestCase):
         with self.assertRaises(AssertionError):
             api.arg_type.integer(minimum=50, maximum=7)
 
+    def test_string_type_free(self):
+        arg_type = api.arg_type.string()
+        self.assertDictEqual(arg_type, {
+            "type": "string"
+        })
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_string_type_min_length(self):
+        arg_type = api.arg_type.string(min_length=5)
+        self.assertDictEqual(arg_type, {
+            "type": "string",
+            "min_length": 5
+        })
+
+    def test_string_type_max_length(self):
+        arg_type = api.arg_type.string(max_length=2)
+        self.assertDictEqual(arg_type, {
+            "type": "string",
+            "max_length": 2
+        })
+
+    def test_string_type_with_regex(self):
+        arg_type = api.arg_type.string(regex=r"^[a-Z]{5}$")
+        self.assertDictEqual(arg_type, {
+            "type": "string",
+            "regex": "^[a-Z]{5}$"
+        })
+
+    def test_string_type_min_lt_max(self):
+        arg_type = api.arg_type.string(min_length=12, max_length=46)
+        self.assertDictEqual(arg_type, {
+            "type": "string",
+            "min_length": 12,
+            "max_length": 46
+        })
+
+    def test_string_type_min_gt_max(self):
+        with self.assertRaises(AssertionError):
+            api.arg_type.string(min_length=26, max_length=1)
