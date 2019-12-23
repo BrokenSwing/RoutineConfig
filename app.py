@@ -4,10 +4,19 @@ from api.task import Task
 import api.arg_type as arg_type
 from api.routine import Routine
 from core import validation
+from core import execution
+import time
+
+
+def start(*args, **kwargs):
+    time.sleep(5)
+    print("Ouais on m'a lancé !")
+
 
 app = Flask(__name__)
 manager = Manager()
 task = Task("My task")
+task.execute_task = start
 task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
 task.register_argument("Phrase", arg_type.string(regex="^c", min_length=1, max_length=10))
@@ -38,7 +47,7 @@ def routines():
         if action == "run":
             r = manager.find_routine(value)
             if r is not None:
-                r.execute_routine()
+                execution.ExecutionThread(r).start()
                 success = "La routine s'est lancé sans erreur"
             else:
                 error = "Impossible de trouver une routine avec ce nom."
