@@ -64,6 +64,60 @@ class TestDiskDeserializers(unittest.TestCase):
         self.assertIsNotNone(r)
         self.assertEqual(len(r.tasks), 0)
 
+    def test_routine_deserialize_missing_arg_value(self):
+        serialized_routine = {
+            "name": "A simple routine",
+            "tasks": [{
+                "name": "a task",
+                "values": {}
+            }]
+        }
+
+        r = des.deserialize_routine(serialized_routine, self.manager)
+        self.assertIsNotNone(r)
+        self.assertEqual(len(r.tasks), 0)
+
+    def test_routine_deserialize_wrong_format_task(self):
+        serialized_routine = {
+            "name": "A simple routine",
+            "tasks": [{
+                "missing name": "a non existing task",
+                "values": {
+                    "first arg": "my string"
+                }
+            }]
+        }
+
+        r = des.deserialize_routine(serialized_routine, self.manager)
+        self.assertIsNotNone(r)
+        self.assertEqual(len(r.tasks), 0)
+
+        serialized_routine = {
+            "name": "A simple routine",
+            "tasks": [{
+                "name": ["Not", "a", "string"],
+                "values": {
+                    "first arg": "my string"
+                }
+            }]
+        }
+
+        r = des.deserialize_routine(serialized_routine, self.manager)
+        self.assertIsNotNone(r)
+        self.assertEqual(len(r.tasks), 0)
+
+        serialized_routine = {
+            "name": "A simple routine",
+            "tasks": [{
+                "name": "a task",
+                "values": "not a dict"
+            }]
+        }
+
+        r = des.deserialize_routine(serialized_routine, self.manager)
+        self.assertIsNotNone(r)
+        self.assertEqual(len(r.tasks), 0)
+
     def test_routine_deserialize_wrong_format(self):
 
         r = des.deserialize_routine({}, self.manager)
@@ -80,4 +134,9 @@ class TestDiskDeserializers(unittest.TestCase):
             "tasks": None
         }, self.manager)
         self.assertIsNone(r)
+
+        # noinspection PyTypeChecker
+        r = des.deserialize_routine("An other type", self.manager)
+        self.assertIsNone(r)
+
 
