@@ -5,22 +5,37 @@ import api.arg_type as arg_type
 from api.routine import Routine
 from core import validation
 from core import execution
-import time
-
-
-def start(*args, **kwargs):
-    time.sleep(5)
-    print("Ouais on m'a lancé !")
+from core.serial.disk import serializers as serial
+from core.serial.disk import deserializers as des
+import json
 
 
 app = Flask(__name__)
 manager = Manager()
 task = Task("My task")
-task.execute_task = start
 task.register_argument("Action", arg_type.choice("Allumer", "Eteindre"))
 task.register_argument("Value", arg_type.integer(minimum=0, maximum=50))
 task.register_argument("Phrase", arg_type.string(regex="^c", min_length=1, max_length=10))
 manager.register_task(task)
+
+
+def save_manager():
+    serialized_routines = [serial.serialize_routine(r) for r in manager.routines.values()]
+    with open("manager_store.json", "w") as file:
+        file.write(json.dumps({"routines": serialized_routines}))
+
+
+def load_manager():
+    with open("manager_store.json", "r") as file:
+        output = json.loads(file.read())
+        if "routines" in output and type(output["routines"]) is list:
+            for serialized_routine in output["routines"]:
+                r = des.deserialize_routine(serialized_routine, manager)
+                if r is not None:
+                    manager.add_routine(r)
+
+
+load_manager()
 
 
 @app.route('/')
@@ -55,6 +70,7 @@ def routines():
             r = manager.find_routine(value)
             if r is not None:
                 manager.remove_routine(r.name)
+                save_manager()
                 success = "La routine a bien été supprimée"
             else:
                 error = "Impossible de trouver une routine avec ce nom."
@@ -66,6 +82,7 @@ def routines():
             elif manager.find_routine(value) is None:
                 r = Routine(value)
                 manager.add_routine(r)
+                save_manager()
                 success = "La routine a bien été créée."
             else:
                 error = "Une routine avec ce nom existe déjà."
@@ -89,6 +106,7 @@ def routines():
                         ok, error = t.on_validation(values)
                         if ok:
                             r.modify_task(task_index, values)
+                            save_manager()
                             success = "La routine a bien été mise à jour."
                 except KeyError:
                     error = "Une erreur est survenue"
@@ -103,6 +121,7 @@ def routines():
                     task_index = request.form["task"]
                     task_index = int(task_index)
                     r.remove_task(task_index)
+                    save_manager()
                     success = "La tâche a bien été supprimée"
                 except KeyError:
                     error = "Une erreur est survenue côté serveur"
@@ -146,6 +165,7 @@ def routine_add_task_values(routine_name: str, task_name: str):
                 error = "Valeur(s) manquante(s) !"
         if error is None:
             r.add_task(t, values)
+            save_manager()
             return redirect("/routines")
 
     return render_template("choose-args.html", routine=r, task=t, error=error)
