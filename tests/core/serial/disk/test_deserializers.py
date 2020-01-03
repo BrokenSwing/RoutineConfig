@@ -168,3 +168,18 @@ class TestDiskDeserializers(unittest.TestCase):
         }, self.manager)
         self.assertTrue(card.is_linked())
         self.assertEqual(card.routine_name, "routine name")
+
+    def test_card_deserialize_wrong_format(self):
+        # noinspection PyTypeChecker
+        self.assertIsNone(des.deserialize_card([], self.manager))
+        self.assertIsNone(des.deserialize_card({}, self.manager))
+        self.assertIsNone(des.deserialize_card({
+            "name": 5,
+            "id": "6546123"
+        }, self.manager))
+        self.assertIsNone(des.deserialize_card({
+            "name": "a string",
+            "id": {
+                "other": "thing"
+            }
+        }, self.manager))
