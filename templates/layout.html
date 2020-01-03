@@ -49,6 +49,15 @@
 
 <div class="section">
     <div class="container">
+
+        {% if error %}
+            {{ helper.error(error) }}
+        {% endif %}
+
+        {% if success %}
+            {{ helper.success(success) }}
+        {% endif %}
+
         {% block content %}{% endblock %}
     </div>
 </div>

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% import "helper.html" as helper %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+
+    <h1 class="title">Enregistrer une carte :</h1>
+
+    {% if card_id %}
+
+    <form method="post">
+        {{ helper.hidden("card_id", card_id) }}
+        {{ helper.field("name", "Nom de la carte") }}
+        <button class="button is-primary">Enregistrer la carte</button>
+    </form>
+
+    {% else %}
+
+        {{ helper.error("Aucune carte à enregistrer n'a été trouvée") }}
+
+        <a class="button is-primary" href="/">Retour</a>
+        <a class="button is-primary" href="/card/register">Ré-essayer</a>
+
+    {% endif %}
+
+{% endblock %}

@@ -3,6 +3,7 @@ from api.manager import Manager
 from api.task import Task
 import api.arg_type as arg_type
 from api.routine import Routine
+from api.card import Card
 from core import validation
 from core import execution
 from core.serial.disk import serializers as serial
@@ -41,6 +42,33 @@ load_manager()
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.route('/card/register', methods=["GET", "POST"])
+def register_card():
+    card_id = "6541564"  # TODO: Fetch card id
+
+    if request.method == "POST":
+        if card_id is None:
+            return render_template("card-register.html", card_id=None, error="La carte n'est plus détectée")
+
+        if "card_id" in request.form and "name" in request.form:
+            sent_card_id = request.form["card_id"]
+            if sent_card_id != str(card_id):
+                return render_template("card-register.html", card_id=card_id, error="La carte a changée, recommencez")
+            name = request.form["name"]
+            if len(name) == 0:
+                return render_template("card-register.html", card_id=card_id, error="Le nom ne doit pas être vide")
+            if manager.find_card_by_name(name) is not None:
+                return render_template("card-register.html", card_id=card_id, error="Ce nom est déjà utilisé")
+
+            card = Card(card_id, name)
+            manager.add_card(card)
+            save_manager()
+
+            return redirect("/")
+
+    return render_template("card-register.html", card_id=card_id)
 
 
 @app.route("/routines/", methods=["GET", "POST"])

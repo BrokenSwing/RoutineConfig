@@ -1,5 +1,6 @@
 from api.task import Task
 from api.routine import Routine
+from api.card import Card
 
 
 class Manager:
@@ -10,6 +11,7 @@ class Manager:
     def __init__(self):
         self.tasks = {}
         self.routines = {}
+        self.cards = {}
 
     def register_task(self, task: Task):
         """
@@ -64,3 +66,36 @@ class Manager:
         :return: the routine with the given name or None if no routine with the given name was find
         """
         return self.routines[routine_name] if routine_name in self.routines else None
+
+    def add_card(self, card: Card):
+        """
+        Adds a card to the manager
+
+        :param card: the card to add
+        """
+        if card.id in self.cards:
+            print("[WARNING] Card with id {} already exists. It will override it.".format(card.id))
+        self.cards[card.id] = card
+
+    def find_card_by_id(self, card_id) -> Card or None:
+        """
+        Retrieves a card from its id.
+
+        :param card_id: the id of the card to retrieve
+        :return: the card with the given id, or None if a such card can't be found
+        """
+        if card_id in self.cards:
+            return self.cards[card_id]
+        return None
+
+    def find_card_by_name(self, card_name) -> Card or None:
+        """
+        Retrieves a card from its name.
+
+        :param card_name: the name of the card to retrieve
+        :return: the first card with the given name, or None if no card with a such name exists
+        """
+        for card_id in self.cards:
+            if self.cards[card_id].name == card_name:
+                return self.cards[card_id]
+        return None
