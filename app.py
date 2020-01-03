@@ -22,8 +22,12 @@ manager.register_task(task)
 
 def save_manager():
     serialized_routines = [serial.serialize_routine(r) for r in manager.routines.values()]
+    serialized_cards = [serial.serialize_card(c) for c in manager.cards.values()]
     with open("manager_store.json", "w") as file:
-        file.write(json.dumps({"routines": serialized_routines}))
+        file.write(json.dumps({
+            "routines": serialized_routines,
+            "cards": serialized_cards
+        }))
 
 
 def load_manager():
@@ -34,6 +38,11 @@ def load_manager():
                 r = des.deserialize_routine(serialized_routine, manager)
                 if r is not None:
                     manager.add_routine(r)
+        if "cards" in output and type(output["cards"]) is list:
+            for serialized_card in output["cards"]:
+                c = des.deserialize_card(serialized_card, manager)
+                if c is not None:
+                    manager.add_card(c)
 
 
 load_manager()

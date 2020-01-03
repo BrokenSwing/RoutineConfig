@@ -3,6 +3,7 @@ import core.serial.disk.deserializers as des
 from api.manager import Manager
 from api.task import Task
 from api.arg_type import string
+from api.routine import Routine
 
 
 class TestDiskDeserializers(unittest.TestCase):
@@ -139,4 +140,31 @@ class TestDiskDeserializers(unittest.TestCase):
         r = des.deserialize_routine("An other type", self.manager)
         self.assertIsNone(r)
 
+    def test_card_deserialize_unlinked(self):
+        card = des.deserialize_card({
+            "name": "my card",
+            "id": "the id"
+        }, self.manager)
+        self.assertEqual(card.name, "my card")
+        self.assertEqual(card.id, "the id")
+        self.assertFalse(card.is_linked())
 
+    def test_card_deserialize_linked_not_found(self):
+        card = des.deserialize_card({
+            "name": "a card",
+            "id": "an id"
+        }, self.manager)
+        self.assertEqual(card.name, "a card")
+        self.assertEqual(card.id, "an id")
+        self.assertFalse(card.is_linked())
+
+    def test_card_deserialize_linked_found(self):
+        routine = Routine("routine name")
+        self.manager.add_routine(routine)
+        card = des.deserialize_card({
+            "name": "card name",
+            "id": "card id",
+            "target": "routine name"
+        }, self.manager)
+        self.assertTrue(card.is_linked())
+        self.assertEqual(card.routine_name, "routine name")

@@ -1,5 +1,6 @@
 from api.routine import Routine
 from api.manager import Manager
+from api.card import Card
 from core.validation import validate
 
 
@@ -54,3 +55,30 @@ def deserialize_routine(obj: dict, manager: Manager) -> Routine or None:
             routine.add_task(t, values)
 
     return routine
+
+
+def deserialize_card(serialized_card: dict, manager: Manager) -> Card or None:
+    """
+    Deserializes a card from the given dict using the registered routines in the given manager.
+    If a referenced routine is missing, the returned card is unlinked.
+    This function doesn't add the deserialized card to the given manager
+
+    :param serialized_card: the serialized card (serialized using core.serial.disk.serializers.serialize_card)
+    :param manager: the manager where we should lookup for referenced routines
+    :return: the deserialized card or None if the format does not match the expected one
+    """
+    if type(serialized_card) is not dict:
+        return None
+    if "name" not in serialized_card or "id" not in serialized_card:
+        return None
+    name = serialized_card["name"]
+    card_id = serialized_card["id"]
+    if type(card_id) is not str or type(name) is not str:
+        return None
+
+    card = Card(card_id, name)
+    if "target" in serialized_card and type(serialized_card["target"]) is str:
+        routine = manager.find_routine(serialized_card["target"])
+        card.link_to(routine)
+
+    return card

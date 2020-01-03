@@ -2,6 +2,7 @@ import unittest
 import core.serial.disk.serializers as serial
 from api.task import Task
 from api.routine import Routine
+from api.card import Card
 import api.arg_type as arg_type
 
 
@@ -35,4 +36,20 @@ class TestDiskSerializers(unittest.TestCase):
                     "arg2": 700
                 }
             }]
+        })
+
+    def test_card_serialization(self):
+        card = Card("card id", "card name")
+        self.assertDictEqual(serial.serialize_card(card), {
+            "name": "card name",
+            "id": "card id",
+        })
+
+        routine = Routine("routine name")
+        card = Card("the card id", "the card name")
+        card.link_to(routine)
+        self.assertDictEqual(serial.serialize_card(card), {
+            "name": "the card name",
+            "id": "the card id",
+            "target": "routine name"
         })
