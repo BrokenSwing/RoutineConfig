@@ -1,10 +1,54 @@
 {% extends "layout.html" %}
+{% import "helper.html" as helper %}
 
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
 
     <h1 class="title">Cartes :</h1>
-    <a class="button is-primary" href="/card/register">Enregistrer une carte</a>
+    <a class="button is-primary" href="/card/register/">Enregistrer une carte</a>
+    <hr>
+    <br>
+
+    {% for card in cards %}
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">{{ card.name }}</p>
+            </header>
+            <form class="content" id="form-{{ card.id }}" method="post">
+                {{ helper.hidden("card_id", card.id) }}
+                <div class="card-content">
+                    <div class="control">
+                        <label class="label" for="{{ card.id }}">Routine à lancer :</label>
+                        <div class="select">
+                            <select id="{{ card.id }}" name="routine_name">
+                                <option
+                                    {% if card.routine_name %}
+                                        selected
+                                    {% endif %}
+                                >-------------</option>
+                                {% for routine in routines %}
+                                    <option value="{{ routine }}"
+                                            {% if card.routine_name and routine == card.routine_name %}
+                                                selected
+                                            {% endif %}
+                                    >{{ routine }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a type="submit" class="card-footer-item" data-target="form-{{ card.id }}" href="#">Sauvegarder</a>
+                </footer>
+            </form>
+        </div>
+    {% endfor %}
+
+    {% if not cards|length %}
+        <h3 class="subtitle">Pas de cartes enregistrées</h3>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='cards.js') }}"></script>
 
 {% endblock %}

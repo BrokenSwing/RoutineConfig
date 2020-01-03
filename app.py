@@ -39,12 +39,28 @@ def load_manager():
 load_manager()
 
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    success = None
+    if request.method == "POST":
+        if "routine_name" in request.form and "card_id" in request.form:
+            card_id = request.form["card_id"]
+            card = manager.find_card_by_id(card_id)
+            routine_name = request.form["routine_name"]
+            if card is not None:
+                routine = manager.find_routine(routine_name)
+                if routine is not None:
+                    card.link_to(routine)
+                    success = "La carte \"{}\" est maintenant liée à la routine \"{}\"".format(card.name, routine.name)
+                else:
+                    card.unlink()
+                    success = "La carte \"{}\" n'est plus liée à aucune routine".format(card.name)
+                save_manager()
+    return render_template("index.html", cards=manager.cards.values(), routines=manager.routines.keys(),
+                           success=success)
 
 
-@app.route('/card/register', methods=["GET", "POST"])
+@app.route('/card/register/', methods=["GET", "POST"])
 def register_card():
     card_id = "6541564"  # TODO: Fetch card id
 
