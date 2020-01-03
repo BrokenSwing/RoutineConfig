@@ -93,3 +93,13 @@ class TestManager(unittest.TestCase):
         self.assertIs(self.card, card)
         self.assertIsNone(self.manager.find_card_by_name("unknown name"))
 
+    def test_remove_card(self):
+        self.manager.add_card(self.card)
+
+        return_value = self.manager.remove_card("any card")
+        self.assertEqual(len(self.manager.cards), 1)
+        self.assertIsNone(return_value)
+
+        return_value = self.manager.remove_card("the card id")
+        self.assertEqual(len(self.manager.cards), 0)
+        self.assertIs(self.card, return_value)

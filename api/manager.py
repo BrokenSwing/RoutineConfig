@@ -99,3 +99,16 @@ class Manager:
             if self.cards[card_id].name == card_name:
                 return self.cards[card_id]
         return None
+
+    def remove_card(self, card_id) -> Card or None:
+        """
+        Removes the card with the given id from the manager.
+
+        :param card_id: the id of the card to remove
+        :return: the removed card if a card with such an id exists, else None
+        """
+        if card_id in self.cards:
+            card = self.cards[card_id]
+            del self.cards[card_id]
+            return card
+        return None

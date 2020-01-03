@@ -51,20 +51,30 @@ load_manager()
 @app.route('/', methods=["GET", "POST"])
 def index():
     success = None
-    if request.method == "POST":
-        if "routine_name" in request.form and "card_id" in request.form:
-            card_id = request.form["card_id"]
-            card = manager.find_card_by_id(card_id)
-            routine_name = request.form["routine_name"]
-            if card is not None:
-                routine = manager.find_routine(routine_name)
-                if routine is not None:
-                    card.link_to(routine)
-                    success = "La carte \"{}\" est maintenant liée à la routine \"{}\"".format(card.name, routine.name)
-                else:
-                    card.unlink()
-                    success = "La carte \"{}\" n'est plus liée à aucune routine".format(card.name)
-                save_manager()
+    if request.method == "POST" and "action" in request.form:
+        if request.form["action"] == "update":
+            if "routine_name" in request.form and "card_id" in request.form:
+                card_id = request.form["card_id"]
+                card = manager.find_card_by_id(card_id)
+                routine_name = request.form["routine_name"]
+                if card is not None:
+                    routine = manager.find_routine(routine_name)
+                    if routine is not None:
+                        card.link_to(routine)
+                        success = "La carte \"{}\" est maintenant liée à la routine \"{}\""\
+                            .format(card.name, routine.name)
+                    else:
+                        card.unlink()
+                        success = "La carte \"{}\" n'est plus liée à aucune routine".format(card.name)
+                    save_manager()
+        elif request.form["action"] == "delete":
+            if "card_id" in request.form:
+                card_id = request.form["card_id"]
+                card = manager.remove_card(card_id)
+                if card is not None:
+                    save_manager()
+                    success = "La carte \"{}\" a bien été supprimée".format(card.name)
+
     return render_template("index.html", cards=manager.cards.values(), routines=manager.routines.keys(),
                            success=success)
 
