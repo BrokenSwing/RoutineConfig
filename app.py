@@ -73,7 +73,7 @@ class Web:
 
         @self.app.route('/card/register/', methods=["GET", "POST"])
         def register_card():
-            card_id = "6541564"  # TODO: Fetch card id
+            card_id = self.card_id_provider()
 
             if request.method == "POST":
                 if card_id is None:
@@ -225,4 +225,4 @@ class Web:
 
 if __name__ == '__main__':
     web = Web(Manager(), lambda: 12)
-    web.app.run()
+    web.app.run(host="0.0.0.0", port=80)
