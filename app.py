@@ -26,18 +26,21 @@ class Web:
                 }))
 
         def load_manager():
-            with open("manager_store.json", "r") as file:
-                output = json.loads(file.read())
-                if "routines" in output and type(output["routines"]) is list:
-                    for serialized_routine in output["routines"]:
-                        r = des.deserialize_routine(serialized_routine, self.manager)
-                        if r is not None:
-                            self.manager.add_routine(r)
-                if "cards" in output and type(output["cards"]) is list:
-                    for serialized_card in output["cards"]:
-                        c = des.deserialize_card(serialized_card, self.manager)
-                        if c is not None:
-                            self.manager.add_card(c)
+            try:
+                with open("manager_store.json", "r") as file:
+                    output = json.loads(file.read())
+                    if "routines" in output and type(output["routines"]) is list:
+                        for serialized_routine in output["routines"]:
+                            r = des.deserialize_routine(serialized_routine, self.manager)
+                            if r is not None:
+                                self.manager.add_routine(r)
+                    if "cards" in output and type(output["cards"]) is list:
+                        for serialized_card in output["cards"]:
+                            c = des.deserialize_card(serialized_card, self.manager)
+                            if c is not None:
+                                self.manager.add_card(c)
+            except FileNotFoundError:
+                pass
 
         load_manager()
 
