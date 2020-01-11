@@ -79,6 +79,7 @@ def deserialize_card(serialized_card: dict, manager: Manager) -> Card or None:
     card = Card(card_id, name)
     if "target" in serialized_card and type(serialized_card["target"]) is str:
         routine = manager.find_routine(serialized_card["target"])
-        card.link_to(routine)
+        if routine is not None:
+            card.link_to(routine)
 
     return card
